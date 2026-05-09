@@ -20,9 +20,13 @@ $(printf '  - %s\n' "${SKILLS[@]}")
 
 Each skill is copied to <target>/skills/<skill-name>/.
 
+By default this is a DRY RUN: it prints what would happen without touching
+the filesystem. Pass --apply to actually install.
+
 Options:
   -t, --target DIR   Gemini config directory (default: \$HOME/.gemini).
   -f, --force        Replace an existing skill directory without prompting.
+      --apply        Actually perform the install. Without this, dry-run only.
   -h, --help         Show this help and exit.
 EOF
 }
@@ -31,11 +35,13 @@ EOF
 
 target="${HOME}/.gemini"
 force=0
+apply=0
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
     -h|--help)    usage; exit 0 ;;
     -f|--force)   force=1; shift ;;
+    --apply)      apply=1; shift ;;
     -t|--target)
       [[ $# -ge 2 ]] || { echo "error: Option --target requires an argument." >&2; exit 1; }
       target="$2"; shift 2 ;;
@@ -45,6 +51,13 @@ while [[ $# -gt 0 ]]; do
     *)            echo "error: Unexpected positional argument: $1" >&2; exit 1 ;;
   esac
 done
+
+if (( apply )); then
+  prefix=""
+else
+  prefix="[dry-run] "
+  echo "Dry run: no files will be changed. Re-run with --apply to install."
+fi
 
 # ---- resolve source --------------------------------------------------------
 
@@ -84,7 +97,11 @@ if [[ ! -d "$target" ]]; then
   exit 1
 fi
 
-mkdir -p "$dst_skills"
+if (( apply )); then
+  mkdir -p "$dst_skills"
+else
+  echo "${prefix}mkdir -p ${dst_skills}"
+fi
 
 # ---- install ---------------------------------------------------------------
 
@@ -108,8 +125,8 @@ for name in "${SKILLS[@]}"; do
 
   if [[ -e "$dst" ]]; then
     if (( force )); then
-      echo "Removing existing $dst"
-      rm -rf "$dst"
+      echo "${prefix}Removing existing $dst"
+      (( apply )) && rm -rf "$dst"
     else
       echo "error: $dst already exists." >&2
       echo "       Re-run with --force to replace it." >&2
@@ -117,8 +134,13 @@ for name in "${SKILLS[@]}"; do
     fi
   fi
 
-  echo "Installing ${name} -> ${dst}"
-  copy_tree "$src" "$dst"
+  echo "${prefix}Installing ${name} -> ${dst}"
+  (( apply )) && copy_tree "$src" "$dst"
 done
 
-echo "Done. Installed ${#SKILLS[@]} skill(s) into ${dst_skills}."
+if (( apply )); then
+  echo "Done. Installed ${#SKILLS[@]} skill(s) into ${dst_skills}."
+else
+  echo "Dry run complete. ${#SKILLS[@]} skill(s) would be installed into ${dst_skills}."
+  echo "Re-run with --apply to perform the install."
+fi

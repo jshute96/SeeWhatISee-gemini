@@ -26,7 +26,7 @@ on each snapshot. For example,
 
 ## Installation
 
-Add the Gemini extension:
+Install the Gemini extension:
 
 ```bash
 gemini extensions install https://github.com/jshute96/SeeWhatISee-gemini
@@ -43,6 +43,15 @@ Add permissions in `$HOME/.gemini/settings.json` to avoid permission prompts:
     ]
   }
 }
+```
+
+#### Manual install
+
+If `gemini extensions install` directly from GitHub doesn't work, clone the release repo and install the extension from files.
+
+```bash
+git clone https://github.com/jshute96/SeeWhatISee-gemini.git
+gemini extension install SeeWhatISee-gemini
 ```
 
 ## Development
