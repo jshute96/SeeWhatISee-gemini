@@ -26,7 +26,11 @@ on each snapshot. For example,
 
 ## Installation
 
-TODO
+Add the Gemini extension:
+
+```bash
+gemini extensions install https://github.com/jshute96/SeeWhatISee-gemini`
+```
 
 ## Development
 
