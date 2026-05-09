@@ -32,6 +32,19 @@ Add the Gemini extension:
 gemini extensions install https://github.com/jshute96/SeeWhatISee-gemini
 ```
 
+Add permissions in `$HOME/.gemini/settings.json` to avoid permission prompts:
+
+```
+{
+  "tools": {
+    "allowed": [
+      "run_shell_command($HOME/.gemini/extensions/see-what-i-see/skills/see-what-i-see/scripts/copy-last-snapshot.sh)",
+      "run_shell_command($HOME/.gemini/extensions/see-what-i-see/skills/see-what-i-see-watch/scripts/watch-and-copy.sh)"
+    ]
+  }
+}
+```
+
 ## Development
 
 This GitHub project stores the released version of the Gemini extension.
