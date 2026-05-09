@@ -29,7 +29,7 @@ on each snapshot. For example,
 Add the Gemini extension:
 
 ```bash
-gemini extensions install https://github.com/jshute96/SeeWhatISee-gemini`
+gemini extensions install https://github.com/jshute96/SeeWhatISee-gemini
 ```
 
 ## Development
