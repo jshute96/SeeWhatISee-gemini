@@ -15,6 +15,7 @@ This GitHub project is the released version of the Gemini extension for SeeWhatI
 
 - `/see-what-i-see` — read the latest snapshot and describe it
 - `/see-what-i-see-watch` — watch for new snapshots to appear, and then look at them when they appear
+- `/see-what-i-see-xtract` — alias for `/see-what-i-see` (useful because Gemini shows auto-completes in reverse alphabetical order)
 
 If you've added a prompt with the snapshot, Gemini will follow it.
 
@@ -39,7 +40,8 @@ Add permissions in `$HOME/.gemini/settings.json` to avoid permission prompts:
   "tools": {
     "allowed": [
       "run_shell_command($HOME/.gemini/extensions/see-what-i-see/skills/see-what-i-see/scripts/copy-last-snapshot.sh)",
-      "run_shell_command($HOME/.gemini/extensions/see-what-i-see/skills/see-what-i-see-watch/scripts/watch-and-copy.sh)"
+      "run_shell_command($HOME/.gemini/extensions/see-what-i-see/skills/see-what-i-see-watch/scripts/watch-and-copy.sh)",
+      "run_shell_command($HOME/.gemini/extensions/see-what-i-see/skills/see-what-i-see-xtract/scripts/copy-last-snapshot.sh)"
     ]
   }
 }
