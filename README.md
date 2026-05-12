@@ -6,6 +6,11 @@
 
 SeeWhatISee is the ultimate Chrome extension screenshot tool for vibe-coding: Share screenshots, HTML, or selected text with your coding agent — CLI or web.
 
+**[Install from the Chrome Web Store](https://chromewebstore.google.com/detail/seewhatisee/mdfeigicgahogllcdiibkeidfllhddae).**
+
+> [!TIP]
+> Pin the extension on your toolbar using **Pin to toolbar** on the **Manage extension** page, or using the "Extensions" (puzzle piece) toolbar icon.
+
 Learn more at https://github.com/jshute96/SeeWhatISee.
 Development happens in that repository.  Issues and PRs should be filed in that repository.
 
