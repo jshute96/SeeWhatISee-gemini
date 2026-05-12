@@ -7,7 +7,7 @@
 
 set -euo pipefail
 
-SKILLS=(see-what-i-see see-what-i-see-watch)
+SKILLS=(see-what-i-see see-what-i-see-watch see-what-i-see-xtract)
 
 usage() {
   cat <<EOF
