@@ -19,10 +19,10 @@ This is a **foreground loop: each iteration blocks** on a shell command that doe
 
 3. **Read captured stdout to get the JSON record(s).** The JSON has absolute paths already filled in for `screenshot`, `contents`, and `selection`.
 
-4. **Process each snapshot record** as described below. (Before restarting the script for the next iteration.)
+4. **Process each snapshot record** as described below. (**Before restarting the script for the next iteration.**)
 
 5. **Launch the next iteration**:
-   Run `./scripts/watch-and-copy.sh --after <timestamp>` (again with no timeout), passing the most recently processed record's `timestamp` field. The `--after` flag ensures we don't miss any captures that arrived while you were processing.
+   Run `./scripts/watch-and-copy.sh` (again with no timeout) to start the next loop.
 
 This **repeat forevers** until the watcher exits non-zero or the user otherwise tells you to stop.
 
