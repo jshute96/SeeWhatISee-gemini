@@ -17,18 +17,8 @@ This is a **foreground loop: each iteration blocks** on a shell command that doe
   - **Non-zero exit (killed / error):** Tell the user the watcher stopped and do NOT restart.
   - **Exit 0 (success — a capture arrived):**
 
-3. **Read captured stdout to get the JSON record(s).** The JSON has absolute paths already filled in for `screenshot`, `contents`, and `selection`.
-
-4. **Process each snapshot record** as described below. (**Before restarting the script for the next iteration.**)
-
-5. **Launch the next iteration**:
-   Run `./scripts/watch-and-copy.sh` (again with no timeout) to start the next loop.
-
-This **repeat forevers** until the watcher exits non-zero or the user otherwise tells you to stop.
-
-## Process each snapshot
-
-1. The JSON record contains `{timestamp, url, title}` plus any of:
+3. **Read captured stdout to get the JSON record(s).** 
+  The JSON record contains `{timestamp, url, title}` plus any of:
   - `screenshot` — object describing a captured PNG, with:
     - `filename` — absolute path.
     - `hasHighlights: true` means the user drew red markup (boxes and/or lines) on top of the screenshot to call attention to specific regions.
@@ -48,7 +38,7 @@ This **repeat forevers** until the watcher exits non-zero or the user otherwise 
 
   **Look at referenced files only. Don't go fishing for others unless asked to.**
 
-2. Process the capture:
+4. **Process each snapshot record** **before restarting the script for the next iteration**.
   - If `screenshot` is present, read `screenshot.filename`.
     - **If `screenshot.hasHighlights` is `true`, the user has drawn red markup to call attention to specific regions. Focus your description on those marked areas. If a `prompt` is present, it is likely referring to those regions specifically — interpret it in that context.**
   - If `contents` is present, don't read the file up front (HTML can be large); wait until you know what to look for.
@@ -59,3 +49,8 @@ This **repeat forevers** until the watcher exits non-zero or the user otherwise 
     - For HTML-only captures, report that you have an HTML snapshot from the source `url` and ask the user what they want to know.
     - For selection-only captures, quote or summarize the selected fragment and mention the source `url`.
     - For URL-only captures (no files), report the `url` and ask the user what they want to know about it.
+
+5. After reporting output, **Launch the next iteration**:
+   Run `./scripts/watch-and-copy.sh` (again with no timeout) to start the next loop.
+
+This **repeats forever** until the watcher exits non-zero or the user otherwise tells you to stop.
