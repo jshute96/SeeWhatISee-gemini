@@ -13,16 +13,18 @@ This is a foreground loop: each iteration blocks on a shell command that doesn't
 
 1. **Wait for the next capture.** Run `./scripts/watch-and-copy.sh` with no timeout. This blocks until there's a capture to process, then prints a JSON record to stdout.
 
-2. **On completion**, check the exit code:
+2. **Check the exit code:**
   - **Non-zero exit (killed / error):** Tell the user the watcher stopped and do NOT restart.
   - **Exit 0 (success — a capture arrived):**
-    1. Read the script's captured stdout to get the JSON record(s). The JSON has absolute paths already filled in for `screenshot`, `contents`, and `selection`.
-    2. Process each snapshot record as described below.
 
-3. **Immediately launch the next iteration**:
+3. **Read captured stdout to get the JSON record(s).** The JSON has absolute paths already filled in for `screenshot`, `contents`, and `selection`.
+
+4. **Process each snapshot record** as described below. (Before restarting the script for the next iteration.)
+
+5. **Launch the next iteration**:
    Run `./scripts/watch-and-copy.sh --after <timestamp>` (again with no timeout), passing the most recently processed record's `timestamp` field. The `--after` flag ensures we don't miss any captures that arrived while you were processing.
 
-4. **Repeat forever** until the watcher exits non-zero or the user otherwise tells you to stop.
+This **repeat forevers** until the watcher exits non-zero or the user otherwise tells you to stop.
 
 ## Process each snapshot
 
