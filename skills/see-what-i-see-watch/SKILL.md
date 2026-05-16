@@ -7,11 +7,11 @@ description: Watch for new captures from the SeeWhatISee Chrome extension. Each 
 
 Watch for new captures from the SeeWhatISee Chrome extension. Each time a capture arrives, process it as described below, then watch for the next one. Keep looping until the user tells you to stop, or until a failure.
 
-This is a foreground loop: each iteration blocks on a shell command that doesn't return until the next capture lands.
+This is a **foreground loop: each iteration blocks** on a shell command that doesn't return until the next capture lands.
 
 ## Getting snapshots in a loop
 
-1. **Wait for the next capture.** Run `./scripts/watch-and-copy.sh` with no timeout. This blocks until there's a capture to process, then prints a JSON record to stdout.
+1. **Wait for the next capture.** Run `./scripts/watch-and-copy.sh` with no timeout. This blocks until there's a capture to process, then prints a JSON record to stdout.  **Block until it completes.**
 
 2. **Check the exit code:**
   - **Non-zero exit (killed / error):** Tell the user the watcher stopped and do NOT restart.
