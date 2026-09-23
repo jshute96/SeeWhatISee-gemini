@@ -3,7 +3,11 @@ name: see-what-i-see-watch
 description: Watch for new captures from the SeeWhatISee Chrome extension. Each time a capture arrives, describe what you see (or follow the user's prompt) and then watch for the next, until stopped by the user.
 ---
 
+To look for older captures (the last few, by date or time, by site, or by text), use the `see-what-i-see-history` skill.
+
 **If anything fails, do not try to debug or fix anything. Just report the failure.**
+
+**Do not read the script.** Just run it, following the instructions below.
 
 Watch for new captures from the SeeWhatISee Chrome extension. Each time a capture arrives, process it as described below, then watch for the next one. Keep looping until the user tells you to stop, or until a failure.
 
@@ -14,32 +18,34 @@ This is a **foreground loop: each iteration blocks** on a shell command that doe
 1. **Wait for the next capture.** Run `./scripts/watch-and-copy.sh` with no timeout. This blocks until there's a capture to process, then prints a JSON record to stdout.  **Block until it completes.**
 
 2. **Check the exit code:**
-  - **Non-zero exit (killed / error):** Tell the user the watcher stopped and do NOT restart.
+  - **Exit 3 (stopped on request):** Tell the user the watch was stopped — it says on stderr whether that was a stop request or another watcher taking over — and do NOT restart.
+  - **Other non-zero (killed or error):** Tell the user the watcher stopped unexpectedly and do NOT restart.
   - **Exit 0 (success — a capture arrived):**
 
 3. **Read captured stdout to get the JSON record(s).** 
-  The JSON record contains `{timestamp, url, title}` plus any of:
+  The capture record contains `{timestamp, url, title}` plus any of:
   - `screenshot` — object describing a captured PNG, with:
-    - `filename` — absolute path.
     - `hasHighlights: true` means the user drew red markup (boxes and/or lines) on top of the screenshot to call attention to specific regions.
     - `hasRedactions: true` means the user blacked out at least one region. Those are deliberately hidden as irrelevant or private — don't comment about them unless asked.
     - `isCropped: true` means the PNG covers only a region the user selected.
   - `contents` — object describing a captured whole-page HTML snapshot, with:
-    - `filename` — absolute path.
     - `isEdited: true` means the user edited the captured HTML before saving, so it didn't come exactly from the website.
   - `selection` — object describing the user's selected text in the page, with:
-    - `filename` — absolute path.
     - `format` — one of `"html"`, `"text"`, `"markdown"`.
     - `isEdited: true` — same as `contents.isEdited`.
   - `prompt` — the user's instruction for this capture.
   - `imageUrl` — URL of a specific image the user captured, inside the page.
+  - `skipInWatcher: true` means the user asked watchers to skip this capture.
+  - `deleted: true` marks a capture the user deleted; only its `timestamp` remains. Ignore these records.
 
   A record may have any subset of `screenshot` / `contents` / `selection`, or none of them (meaning the URL and optional `prompt` are the whole payload).
 
+  Each present artifact also has a `filename` field with an absolute path to the file.
+
   **Look at referenced files only. Don't go fishing for others unless asked to.**
 
-4. **Process each snapshot record** **before restarting the script for the next iteration**.
-  - If `screenshot` is present, read `screenshot.filename`.
+4. Process the capture:
+  - If `screenshot` is present, read the screenshot.
     - **If `screenshot.hasHighlights` is `true`, the user has drawn red markup to call attention to specific regions. Focus your description on those marked areas. If a `prompt` is present, it is likely referring to those regions specifically — interpret it in that context.**
   - If `contents` is present, don't read the file up front (HTML can be large); wait until you know what to look for.
   - If `selection` is present, don't read the file until you know what to look for.

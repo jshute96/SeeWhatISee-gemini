@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Thin wrapper: compute the Gemini-readable tmp dir and defer to
-# SeeWhatISee.sh in single-shot --watch mode.
+# SeeWhatISee.py in single-shot --watch mode.
 #
 # Gemini CLI has no async background worker with a completion
 # callback, so its /see-what-i-see-watch command runs as a series of
@@ -12,6 +12,12 @@
 # adds --copy-to-dir so the captured files land somewhere Gemini can
 # read (see ../../see-what-i-see/scripts/copy-last-snapshot.sh for
 # the why).
+#
+# The watch session is published, making it visible to the extension's
+# Capture page and stoppable — from there, or with
+# /see-what-i-see-stop — between two iterations as well as during one.
+# Stopped that way the run exits non-zero, which is the loop's signal
+# not to run again.
 
 set -euo pipefail
 
@@ -23,7 +29,7 @@ if [[ -z "${TARGET_DIR:-}" ]]; then
 fi
 TARGET_DIR="$TARGET_DIR/SeeWhatISee"
 
-# SeeWhatISee.sh lives in the see-what-i-see skill's scripts/ dir;
+# SeeWhatISee.py lives in the see-what-i-see skill's scripts/ dir;
 # reach across sibling-relative.
-exec "$(dirname "${BASH_SOURCE[0]}")/../../see-what-i-see/scripts/SeeWhatISee.sh" \
+exec "$(dirname "${BASH_SOURCE[0]}")/../../see-what-i-see/scripts/SeeWhatISee.py" \
   --watch --catch-up-one --copy-to-dir "$TARGET_DIR" "$@"
